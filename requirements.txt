@@ -1,0 +1,5 @@
+Flask
+pandas
+statsmodels
+base58
+ecdsa

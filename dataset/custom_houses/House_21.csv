@@ -1,0 +1,3 @@
+timestamp,house_id,ac,fridge,lights,fans,washing_machine,tv
+2023-01-01 00:00:00,House_21,0.10,0.20,0.30,0.25,0.15,0.18
+2023-01-01 01:00:00,House_21,0.12,0.18,0.28,0.22,0.18,0.16
