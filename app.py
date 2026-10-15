@@ -546,14 +546,12 @@ def home():
         preferred_appliance = available_appliances[0]
 
     # Generate recommendations
-    print(f"DEBUG: peak_hour={analysis.get('peak_hour')}, anomaly_count={analysis.get('anomaly_count')}")
     advice = generate_advice(
         analysis,
         user_preference=preferred_appliance or None,
         period=period,
         forecast_value=summary["average"] if summary["count"] > 0 else None
     )
-    print(f"DEBUG: advice={advice}")
 
     # Generate balancing recommendation
     balancing = ""
