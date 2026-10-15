@@ -1,226 +1,1233 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EnerCast</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>{{ title }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-dark: #0f0f23;
+            --bg-card: rgba(30, 30, 60, 0.6);
+            --bg-card-hover: rgba(40, 40, 80, 0.8);
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: rgba(99, 102, 241, 0.2);
+            --glow: rgba(99, 102, 241, 0.4);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 50%, #0ea5e9 100%);
-            color: #e2e8f0;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-dark);
+            background-image:
+                radial-gradient(ellipse at top left, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at center, rgba(6, 182, 212, 0.05) 0%, transparent 70%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
+
+        /* Animated background particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 15s infinite ease-in-out;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.3; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 32px 20px 60px;
+            padding: 24px;
+            position: relative;
+            z-index: 1;
         }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
+
+        /* Header */
+        header {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            padding: 32px;
+            border-radius: 24px;
             margin-bottom: 24px;
-            flex-wrap: wrap;
+            position: relative;
+            overflow: hidden;
+            animation: slideDown 0.6s ease-out;
+        }
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         h1 {
-            margin: 0;
-            font-size: 2.3rem;
-        }
-        .filters, .upload-box {
-            background: rgba(15, 23, 42, 0.55);
-            border: 1px solid rgba(148, 163, 184, 0.35);
-            border-radius: 18px;
-            padding: 18px;
-            display: flex;
-            gap: 14px;
-            flex-wrap: wrap;
-            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
-            margin-bottom: 22px;
-        }
-        .filters label, .upload-box label {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            font-size: 0.85rem;
-            color: #cbd5e1;
-        }
-        select, input, button {
-            border: none;
-            border-radius: 10px;
-            padding: 10px 12px;
-            font-size: 1rem;
-        }
-        button {
-            background: #38bdf8;
-            color: #082f49;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 18px;
-            margin: 26px 0;
-        }
-        .card {
-            background: rgba(15, 23, 42, 0.65);
-            border: 1px solid rgba(148, 163, 184, 0.25);
-            border-radius: 18px;
-            padding: 18px;
-            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
-        }
-        .kpi {
             font-size: 2rem;
             font-weight: 700;
-            color: #7dd3fc;
-            margin-top: 12px;
+            background: linear-gradient(135deg, #fff 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
         }
-        .layout {
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 22px;
-            margin-top: 26px;
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
-        .panel {
-            background: rgba(15, 23, 42, 0.7);
-            border: 1px solid rgba(148, 163, 184, 0.25);
-            border-radius: 18px;
-            padding: 20px;
+        .subtitle span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
-        ul {
-            padding-left: 18px;
-            line-height: 1.8;
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
         }
-        li {
-            margin-bottom: 6px;
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
         }
-        .status {
-            color: #86efac;
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+        .card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.15);
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card h2::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        /* Grid */
+        .grid { display: grid; gap: 24px; margin-bottom: 24px; }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-5 { grid-template-columns: repeat(5, 1fr); }
+        @media (max-width: 1200px) { .grid-5 { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 900px) { .grid-2, .grid-3, .grid-5 { grid-template-columns: 1fr; } }
+
+        /* Stats Cards */
+        .stat-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.15s; }
+        .stat-card:nth-child(3) { animation-delay: 0.2s; }
+        .stat-card:nth-child(4) { animation-delay: 0.25s; }
+        .stat-card:nth-child(5) { animation-delay: 0.3s; }
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+        }
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .stat-card:hover::after { transform: scaleX(1); }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 1.5rem;
+        }
+        .stat-icon.blue { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+        .stat-icon.green { background: linear-gradient(135deg, var(--success), #059669); }
+        .stat-icon.orange { background: linear-gradient(135deg, var(--warning), #d97706); }
+        .stat-icon.pink { background: linear-gradient(135deg, var(--secondary), #db2777); }
+        .stat-icon.cyan { background: linear-gradient(135deg, var(--accent), #0891b2); }
+        .stat-value {
+            font-size: 2rem;
             font-weight: 700;
+            background: linear-gradient(135deg, #fff, var(--text));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
         }
-        @media (max-width: 760px) {
-            .layout {
-                grid-template-columns: 1fr;
-            }
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
+
+        /* Form */
+        .form-section {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            padding: 28px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            animation: fadeInUp 0.6s ease-out 0.1s backwards;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: flex-end;
+        }
+        .form-group {
+            flex: 1;
+            min-width: 140px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(15, 15, 35, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        .form-group select:focus, .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        .form-group select:hover, .form-group input:hover {
+            border-color: var(--primary-light);
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.7);
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 12px 32px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        .btn:hover::before { left: 100%; }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+        .btn:active { transform: translateY(0); }
+        .btn-secondary {
+            background: linear-gradient(135deg, #475569, #334155);
+        }
+
+        /* Alert */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: shake 0.5s ease;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .alert-error {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #fcd34d;
+        }
+        .alert-success {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #6ee7b7;
+            animation: slideIn 0.5s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+        }
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent), #0891b2);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+        .tab-btn {
+            padding: 10px 20px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .tab-btn:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--primary);
+            color: var(--text);
+        }
+        .tab-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Table */
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 14px 16px; text-align: left; }
+        th {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+        }
+        td { border-bottom: 1px solid rgba(99, 102, 241, 0.1); }
+        tr { transition: background 0.2s ease; }
+        tr:hover { background: rgba(99, 102, 241, 0.05); }
+
+        /* Charts */
+        .chart-box {
+            height: 300px;
+            position: relative;
+            padding: 10px;
+        }
+
+        /* Recommendations */
+        .rec-list { list-style: none; }
+        .rec-item {
+            padding: 16px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.05));
+            border-left: 4px solid var(--primary);
+            border-radius: 0 12px 12px 0;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+        .rec-item:hover {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.1));
+            transform: translateX(8px);
+            border-left-color: var(--secondary);
+        }
+
+        /* Progress bars */
+        .progress {
+            height: 8px;
+            background: rgba(99, 102, 241, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 4px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+        .badge-green { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+        .badge-green::before { background: #34d399; }
+        .badge-yellow { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        .badge-yellow::before { background: #fbbf24; }
+        .badge-blue { background: rgba(99, 102, 241, 0.2); color: #818cf8; }
+        .badge-blue::before { background: #818cf8; }
+
+        /* Accordion */
+        details {
+            margin-bottom: 24px;
+            animation: fadeInUp 0.6s ease-out 0.2s backwards;
+        }
+        summary {
+            padding: 18px 24px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--primary-light);
+            transition: all 0.3s ease;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        summary::-webkit-details-marker { display: none; }
+        summary::before {
+            content: '+';
+            font-size: 1.5rem;
+            font-weight: 300;
+            transition: transform 0.3s ease;
+        }
+        details[open] summary::before { transform: rotate(45deg); }
+        summary:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--primary);
+        }
+        details[open] summary {
+            border-radius: 16px 16px 0 0;
+            border-bottom-color: transparent;
+        }
+        .details-content {
+            padding: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 16px 16px;
+            animation: slideDown 0.3s ease;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 32px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        footer a {
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Tooltip */
+        [data-tooltip] {
+            position: relative;
+            cursor: help;
+        }
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-8px);
+            padding: 8px 12px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            z-index: 100;
+        }
+        [data-tooltip]:hover::after {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(-4px);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        /* Custom animations for specific elements */
+        .animate-delay-1 { animation-delay: 0.1s; }
+        .animate-delay-2 { animation-delay: 0.2s; }
+        .animate-delay-3 { animation-delay: 0.3s; }
+        .animate-delay-4 { animation-delay: 0.4s; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div>
-                <h1>{{ title }}</h1>
-                <p class="status">Smart household energy monitoring</p>
-            </div>
-        </div>
+    <!-- Animated particles background -->
+    <div class="particles" id="particles"></div>
 
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>{{ title }}</h1>
+            <p class="subtitle">
+                <span><span class="pulse-dot"></span> Live Dashboard</span>
+                <span>{{ selected_house_name }}</span>
+                <span>{{ today_label }}</span>
+                <span>{{ frequency_label }} data</span>
+            </p>
+        </header>
+
+        <!-- Alerts -->
         {% if error_message %}
-            <div class="upload-box" style="border-color: rgba(248, 113, 113, 0.7); color: #fecaca;">
-                {{ error_message }}
-            </div>
+        <div class="alert alert-error">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+            {{ error_message }}
+        </div>
         {% endif %}
 
-        <form method="post" action="/" enctype="multipart/form-data" class="upload-box">
-            <label>
-                New house name
-                <input type="text" name="new_house_name" placeholder="e.g. House_21" />
-            </label>
-            <label>
-                Upload house CSV
-                <input type="file" name="house_file" accept=".csv" />
-            </label>
-            <button type="submit">Add custom house</button>
+        {% if success_message %}
+        <div class="alert alert-success">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            {{ success_message }}
+        </div>
+        {% endif %}
+
+        {% if data_age_days is not none and data_age_days > 0 %}
+        <div class="alert alert-warning">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+            Data is {{ data_age_days }} day{% if data_age_days != 1 %}s{% endif %} old ({{ latest_actual_date }})
+        </div>
+        {% endif %}
+
+        <!-- Controls -->
+        <form method="get" action="/" class="form-section">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>House</label>
+                    <select name="house_id" onchange="this.form.submit()">
+                        {% for h in house_options %}
+                        <option value="{{ h.id }}" {% if selected_house == h.id %}selected{% endif %}>{{ h.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Forecast Period</label>
+                    <select name="period" id="periodSelect" onchange="toggleCustomDates()">
+                        <option value="day" {% if selected_period == 'day' %}selected{% endif %}>Tomorrow</option>
+                        <option value="week" {% if selected_period == 'week' %}selected{% endif %}>7 Days</option>
+                        <option value="15d" {% if selected_period == '15d' %}selected{% endif %}>15 Days</option>
+                        <option value="30d" {% if selected_period == '30d' %}selected{% endif %}>30 Days</option>
+                        <option value="month" {% if selected_period == 'month' %}selected{% endif %}>Next Month</option>
+                        <option value="3month" {% if selected_period == '3month' %}selected{% endif %}>3 Months</option>
+                        <option value="custom" {% if selected_period == 'custom' %}selected{% endif %}>Custom Range</option>
+                    </select>
+                </div>
+                <div class="form-group" id="startDateGroup" style="{% if selected_period != 'custom' %}display:none{% endif %}">
+                    <label>Start Date</label>
+                    <input type="date" name="start_date" id="startDate" value="{{ start_date }}" min="{{ today_label }}" onchange="validateDates()">
+                </div>
+                <div class="form-group" id="endDateGroup" style="{% if selected_period != 'custom' %}display:none{% endif %}">
+                    <label>End Date</label>
+                    <input type="date" name="end_date" id="endDate" value="{{ end_date }}" min="{{ today_label }}" onchange="validateDates()">
+                </div>
+                <div class="form-group">
+                    <label>Optimize For</label>
+                    <select name="preferred_appliance">
+                        {% for row in analysis.appliance_rows %}
+                        {% if row.availability == 'Available' %}
+                        <option value="{{ row.appliance }}" {% if preferred_appliance == row.appliance %}selected{% endif %}>{{ row.appliance }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Extra kWh</label>
+                    <input type="number" name="additional_kwh" step="0.01" value="{{ additional_kwh }}" placeholder="Auto">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn">Generate Forecast</button>
+                </div>
+            </div>
+            <div id="dateError" style="display:none; color:#f87171; font-size:0.85rem; padding:12px; background:rgba(248,113,113,0.1); border-radius:8px; margin-top:16px;"></div>
         </form>
 
-        <form method="get" action="/" class="filters">
-            <label>
-                House ID
-                <input name="house_input" value="{{ selected_house if selected_house != 'all' else '' }}" placeholder="e.g. House_1" />
-            </label>
+        <!-- Data Management Section -->
+        <details>
+            <summary>Manage Data & Update Usage</summary>
+            <div class="details-content">
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button type="button" class="tab-btn active" onclick="showTab('manual-entry')">Manual Entry</button>
+                    <button type="button" class="tab-btn" onclick="showTab('append-data')">Append Data File</button>
+                    <button type="button" class="tab-btn" onclick="showTab('add-house')">Add New House</button>
+                </div>
 
-            <label>
-                Quick select
-                <select name="house_id">
-                    <option value="all">All Houses</option>
-                    {% for house in house_options %}
-                        <option value="{{ house }}" {% if selected_house == house %}selected{% endif %}>{{ house.replace('_', ' ') }}</option>
-                    {% endfor %}
-                </select>
-            </label>
+                <!-- Tab 1: Manual Entry -->
+                <div id="manual-entry" class="tab-content active">
+                    <form method="post">
+                        <input type="hidden" name="action" value="manual_entry">
+                        <input type="hidden" name="manual_house_id" value="{{ selected_house }}">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Duration Type</label>
+                                <select name="duration_type" id="durationType" onchange="updateDateInput()">
+                                    <option value="hourly">Hourly</option>
+                                    <option value="daily">Daily</option>
+                                    <option value="monthly">Monthly</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Date & Time</label>
+                                <input type="datetime-local" name="usage_date" id="usageDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Usage (kWh)</label>
+                                <input type="number" name="usage_value" step="0.01" min="0" placeholder="e.g., 2.5" required>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success">Add Reading</button>
+                            </div>
+                        </div>
+                        <p style="color:var(--text-muted);font-size:0.85rem;margin-top:12px;">
+                            Add a single usage reading for <strong>{{ selected_house_name }}</strong>. New readings update predictions automatically.
+                        </p>
+                    </form>
+                </div>
 
-            <label>
-                Forecast horizon
-                <select name="period">
-                    <option value="day" {% if selected_period == 'day' %}selected{% endif %}>Next day</option>
-                    <option value="week" {% if selected_period == 'week' %}selected{% endif %}>Next week</option>
-                    <option value="month" {% if selected_period == 'month' %}selected{% endif %}>Next month</option>
-                </select>
-            </label>
+                <!-- Tab 2: Append Data File -->
+                <div id="append-data" class="tab-content">
+                    <form method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="append_data">
+                        <input type="hidden" name="append_house_id" value="{{ selected_house }}">
+                        <div class="form-row">
+                            <div class="form-group" style="flex:2;">
+                                <label>CSV File with New Readings</label>
+                                <input type="file" name="append_file" accept=".csv" required>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-accent">Append to {{ selected_house_name }}</button>
+                            </div>
+                        </div>
+                        <p style="color:var(--text-muted);font-size:0.85rem;margin-top:12px;">
+                            Upload a CSV file with additional readings. New data will be merged with existing data for <strong>{{ selected_house_name }}</strong>.
+                            Duplicate timestamps will be updated with new values.
+                        </p>
+                        <div style="background:rgba(99,102,241,0.1);border-radius:8px;padding:12px;margin-top:12px;">
+                            <strong style="color:var(--primary-light);">Expected CSV Format:</strong>
+                            <code style="display:block;margin-top:8px;color:var(--text-muted);font-size:0.8rem;">
+                                timestamp, ac, fridge, lights, fans, tv, ...<br>
+                                2024-01-15 10:00, 1.2, 0.8, 0.3, 0.2, 0.5, ...
+                            </code>
+                        </div>
+                    </form>
+                </div>
 
-            <label>
-                Focus appliance
-                <select name="preferred_appliance">
-                    <option value="AC" {% if preferred_appliance == 'AC' %}selected{% endif %}>AC</option>
-                    <option value="Fridge" {% if preferred_appliance == 'Fridge' %}selected{% endif %}>Fridge</option>
-                    <option value="Lights" {% if preferred_appliance == 'Lights' %}selected{% endif %}>Lights</option>
-                    <option value="Fans" {% if preferred_appliance == 'Fans' %}selected{% endif %}>Fans</option>
-                    <option value="Washing Machine" {% if preferred_appliance == 'Washing Machine' %}selected{% endif %}>Washing Machine</option>
-                    <option value="TV" {% if preferred_appliance == 'TV' %}selected{% endif %}>TV</option>
-                </select>
-            </label>
-
-            <button type="submit">View prediction</button>
-        </form>
-
-        <div class="cards">
-            <div class="card">
-                <div>Total usage</div>
-                <div class="kpi">{{ analysis.total_consumption | round(2) }} kWh</div>
+                <!-- Tab 3: Add New House -->
+                <div id="add-house" class="tab-content">
+                    <form method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="add_house">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>House Name</label>
+                                <input type="text" name="new_house_name" placeholder="e.g., My Home" required>
+                            </div>
+                            <div class="form-group" style="flex:2;">
+                                <label>Energy Data (CSV)</label>
+                                <input type="file" name="house_file" accept=".csv" required>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-secondary">Create House</button>
+                            </div>
+                        </div>
+                        <p style="color:var(--text-muted);font-size:0.85rem;margin-top:12px;">
+                            Create a new house with its own dataset. Each house has isolated data and predictions.
+                        </p>
+                    </form>
+                </div>
             </div>
-            <div class="card">
-                <div>Average usage</div>
-                <div class="kpi">{{ analysis.average_consumption | round(2) }} kWh</div>
+        </details>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-5">
+            <div class="stat-card">
+                <div class="stat-icon blue">&#9889;</div>
+                <div class="stat-value">{{ analysis.latest_actual | round(2) }}</div>
+                <div class="stat-label">Latest (kWh)</div>
             </div>
-            <div class="card">
-                <div>Peak month</div>
-                <div class="kpi">{{ peak_month_label }}</div>
+            <div class="stat-card">
+                <div class="stat-icon green">&#128200;</div>
+                <div class="stat-value">{{ analysis.average_consumption | round(2) }}</div>
+                <div class="stat-label">Average (kWh)</div>
             </div>
-            <div class="card">
-                <div>{{ forecast_label }}</div>
-                <div class="kpi">{{ forecast[forecast_label] | round(2) }} kWh</div>
+            <div class="stat-card">
+                <div class="stat-icon orange">&#128293;</div>
+                <div class="stat-value" data-tooltip="Predicted total for selected period">{% if forecast_total %}{{ forecast_total }}{% else %}N/A{% endif %}</div>
+                <div class="stat-label">{{ forecast_total_label }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon pink">&#128202;</div>
+                <div class="stat-value">{{ analysis.trend }}</div>
+                <div class="stat-label">Trend</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon cyan">&#127968;</div>
+                <div class="stat-value" style="font-size:1.2rem;">{{ analysis.highest_appliance }}</div>
+                <div class="stat-label">Top Consumer</div>
             </div>
         </div>
 
-        <div class="layout">
-            <div class="panel">
-                <h2>Usage breakdown</h2>
-                <ul>
-                    {% for key, value in analysis.percentage.items() %}
-                        <li>{{ key }}: {{ value | round(2) }}%</li>
-                    {% endfor %}
-                </ul>
+        <!-- Charts Row 1 -->
+        <div class="grid grid-2">
+            <div class="card animate-delay-1">
+                <h2>Energy by Appliance</h2>
+                <div class="chart-box"><canvas id="applianceChart"></canvas></div>
             </div>
-
-            <div class="panel">
-                <h2>Recommendations</h2>
-                <ul>
+            <div class="card animate-delay-2">
+                <h2>Smart Recommendations</h2>
+                <ul class="rec-list">
                     {% for item in advice %}
-                        <li>{{ item }}</li>
+                    <li class="rec-item">{{ item }}</li>
+                    {% else %}
+                    <li class="rec-item">Upload more data to receive personalized recommendations</li>
                     {% endfor %}
                 </ul>
             </div>
         </div>
 
-        <div class="panel" style="margin-top: 22px;">
-            <h2>Forecast summary</h2>
-            <ul>
-                {% for key, value in forecast.items() %}
-                    <li>{{ key }}: {{ value | round(2) }} kWh</li>
-                {% endfor %}
-            </ul>
+        <!-- Comparison Chart -->
+        <div class="card animate-delay-3">
+            <h2>Actual vs Forecast Comparison</h2>
+            <div class="chart-box" style="height:350px;"><canvas id="comparisonChart"></canvas></div>
         </div>
+
+        <!-- Appliance Table -->
+        <div class="card animate-delay-2">
+            <h2>Appliance Breakdown</h2>
+            <table>
+                <thead>
+                    <tr><th>Appliance</th><th>Consumption</th><th>Share</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                    {% for row in analysis.appliance_rows %}
+                    <tr>
+                        <td><strong>{{ row.appliance }}</strong></td>
+                        <td>{% if row.consumption != 'N/A' %}{{ row.consumption }} kWh{% else %}<span style="color:var(--text-muted)">-</span>{% endif %}</td>
+                        <td>
+                            {% if row.percentage != 'N/A' %}
+                            <div style="display:flex;align-items:center;gap:12px;">
+                                <div class="progress" style="width:100px;"><div class="progress-bar" style="width:{{ row.percentage }}%"></div></div>
+                                <span>{{ row.percentage }}%</span>
+                            </div>
+                            {% else %}<span style="color:var(--text-muted)">-</span>{% endif %}
+                        </td>
+                        <td><span class="badge {% if row.availability == 'Available' %}badge-green{% else %}badge-yellow{% endif %}">{{ row.availability }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Charts Row 2 -->
+        <div class="grid grid-2">
+            <div class="card animate-delay-3">
+                <h2>Historical Trend</h2>
+                <div class="chart-box"><canvas id="historyChart"></canvas></div>
+            </div>
+            <div class="card animate-delay-4">
+                <h2>Key Statistics</h2>
+                <table>
+                    <tr><td>Peak Month</td><td><strong>{{ peak_month_label }}</strong></td></tr>
+                    <tr><td>Minimum Reading</td><td><strong>{{ analysis.min_consumption | round(2) }} kWh</strong></td></tr>
+                    <tr><td>Maximum Reading</td><td><strong>{{ analysis.max_consumption | round(2) }} kWh</strong></td></tr>
+                    <tr><td>Total Records</td><td><strong>{{ analysis.record_count | default(0) }}</strong></td></tr>
+                    <tr><td>Anomalies Detected</td><td><strong>{{ analysis.anomaly_count | default(0) }}</strong></td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Forecast Charts -->
+        <div class="grid grid-2">
+            <div class="card">
+                <h2>{{ forecast_label }}</h2>
+                <div class="chart-box"><canvas id="forecastChart"></canvas></div>
+            </div>
+            <div class="card">
+                <h2>Next Month Outlook</h2>
+                <div class="chart-box"><canvas id="nextMonthChart"></canvas></div>
+            </div>
+        </div>
+
+        <!-- Forecast Table -->
+        <div class="card">
+            <h2>Forecast Data <span class="badge badge-blue">{{ forecast_rows | length }} points</span></h2>
+            {% if forecast_rows %}
+            <div style="max-height:400px;overflow-y:auto;">
+            <table>
+                <thead><tr><th>Date & Time</th><th>Predicted</th><th>Range</th><th>Status</th></tr></thead>
+                <tbody>
+                    {% for row in forecast_rows[:50] %}
+                    <tr>
+                        <td>{{ row.date }}</td>
+                        <td><strong>{{ row.consumption }} kWh</strong></td>
+                        <td style="color:var(--text-muted);">{{ row.lower }} - {{ row.upper }}</td>
+                        <td><span class="badge {% if row.status == 'Provisional' %}badge-yellow{% elif row.status == 'Confirmed' %}badge-green{% else %}badge-blue{% endif %}">{{ row.status }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+            {% if forecast_rows | length > 50 %}<p style="color:var(--text-muted);margin-top:16px;text-align:center;">Showing 50 of {{ forecast_rows | length }} forecast points</p>{% endif %}
+            {% else %}
+            <p style="color:var(--text-muted);text-align:center;padding:40px;">Select a forecast period to generate predictions</p>
+            {% endif %}
+        </div>
+
+        <!-- Energy Balancing -->
+        <div class="card">
+            <h2>Energy Balancing Strategy</h2>
+            <div style="white-space:pre-wrap;color:var(--text-muted);line-height:1.8;">{{ balancing_recommendation or 'Select an appliance above to get personalized balancing recommendations' }}</div>
+        </div>
+
+        <!-- Usage Distribution -->
+        <div class="card">
+            <h2>Usage Distribution</h2>
+            {% for item in usage_breakdown %}
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;padding:8px 0;">
+                <span style="width:140px;font-weight:500;">{{ item.appliance }}</span>
+                <div class="progress" style="flex:1;"><div class="progress-bar" style="width:{{ item.percentage }}%"></div></div>
+                <strong style="min-width:50px;text-align:right;">{{ item.percentage }}%</strong>
+            </div>
+            {% endfor %}
+        </div>
+
+        <footer>
+            <p>Energy Insight Dashboard &bull; Generated {{ generated_at }}</p>
+            <p style="margin-top:8px;">Powered by ARIMA Forecasting with Seasonal Pattern Analysis</p>
+        </footer>
     </div>
+
+    <script>
+        // Create animated particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Toggle custom date fields
+        function toggleCustomDates() {
+            const period = document.getElementById('periodSelect').value;
+            const startGroup = document.getElementById('startDateGroup');
+            const endGroup = document.getElementById('endDateGroup');
+            const errorDiv = document.getElementById('dateError');
+
+            if (period === 'custom') {
+                startGroup.style.display = 'block';
+                endGroup.style.display = 'block';
+                const startInput = document.getElementById('startDate');
+                const endInput = document.getElementById('endDate');
+                const today = new Date();
+                const tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const nextWeek = new Date(today);
+                nextWeek.setDate(nextWeek.getDate() + 7);
+
+                if (!startInput.value) startInput.value = tomorrow.toISOString().split('T')[0];
+                if (!endInput.value) endInput.value = nextWeek.toISOString().split('T')[0];
+            } else {
+                startGroup.style.display = 'none';
+                endGroup.style.display = 'none';
+                if (errorDiv) errorDiv.style.display = 'none';
+            }
+        }
+
+        // Validate dates
+        function validateDates() {
+            const period = document.getElementById('periodSelect').value;
+            if (period !== 'custom') return true;
+
+            const startInput = document.getElementById('startDate');
+            const endInput = document.getElementById('endDate');
+            const errorDiv = document.getElementById('dateError');
+            const submitBtn = document.querySelector('button[type="submit"]');
+
+            const start = startInput.value;
+            const end = endInput.value;
+            const today = new Date().toISOString().split('T')[0];
+
+            let error = '';
+            if (!start || !end) error = 'Please select both start and end dates.';
+            else if (start > end) error = 'Start date must be before end date.';
+            else if (start < today) error = 'Start date cannot be in the past.';
+            else {
+                const diffDays = Math.ceil((new Date(end) - new Date(start)) / (1000 * 60 * 60 * 24));
+                if (diffDays > 365) error = 'Date range cannot exceed 365 days.';
+            }
+
+            if (error) {
+                errorDiv.textContent = error;
+                errorDiv.style.display = 'block';
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.5';
+                return false;
+            } else {
+                errorDiv.style.display = 'none';
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+                endInput.min = start;
+                return true;
+            }
+        }
+
+        // Tab switching
+        function showTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Update date input based on duration type
+        function updateDateInput() {
+            const durationType = document.getElementById('durationType').value;
+            const dateInput = document.getElementById('usageDate');
+
+            if (durationType === 'hourly') {
+                dateInput.type = 'datetime-local';
+                dateInput.placeholder = 'Select date and time';
+            } else if (durationType === 'daily') {
+                dateInput.type = 'date';
+                dateInput.placeholder = 'Select date';
+            } else if (durationType === 'monthly') {
+                dateInput.type = 'month';
+                dateInput.placeholder = 'Select month';
+            }
+
+            // Set default value to now
+            const now = new Date();
+            if (durationType === 'hourly') {
+                dateInput.value = now.toISOString().slice(0, 16);
+            } else if (durationType === 'daily') {
+                dateInput.value = now.toISOString().split('T')[0];
+            } else if (durationType === 'monthly') {
+                dateInput.value = now.toISOString().slice(0, 7);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleCustomDates();
+            validateDates();
+            updateDateInput();
+
+            const form = document.querySelector('form[method="get"]');
+            if (form) form.addEventListener('submit', function(e) {
+                if (document.getElementById('periodSelect').value === 'custom' && !validateDates()) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Chart configuration
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.borderColor = 'rgba(99, 102, 241, 0.1)';
+        Chart.defaults.font.family = "'Inter', sans-serif";
+
+        const applianceData = {{ appliance_rows | tojson }};
+        const historyData = {{ historical_rows | tojson }};
+        const forecastData = {{ forecast_rows | tojson }};
+        const nextMonthData = {{ next_month_rows | tojson }};
+
+        // Gradient helper
+        function createGradient(ctx, color1, color2) {
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, color1);
+            gradient.addColorStop(1, color2);
+            return gradient;
+        }
+
+        // Appliance Chart
+        if (applianceData.length) {
+            const ctx = document.getElementById('applianceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: applianceData.filter(d => d.consumption !== 'N/A').map(d => d.appliance),
+                    datasets: [{
+                        data: applianceData.filter(d => d.consumption !== 'N/A').map(d => d.consumption),
+                        backgroundColor: ['#6366f1', '#ec4899', '#06b6d4', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444'],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: { position: 'right', labels: { padding: 15, usePointStyle: true } }
+                    }
+                }
+            });
+        }
+
+        // History Chart
+        if (historyData.length) {
+            const ctx = document.getElementById('historyChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: historyData.map(d => d.date),
+                    datasets: [{
+                        data: historyData.map(d => d.consumption),
+                        borderColor: '#6366f1',
+                        backgroundColor: createGradient(ctx, 'rgba(99, 102, 241, 0.3)', 'rgba(99, 102, 241, 0)'),
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: '#6366f1'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { grid: { color: 'rgba(99, 102, 241, 0.1)' } } } }
+            });
+        }
+
+        // Forecast Chart
+        if (forecastData.length) {
+            const ctx = document.getElementById('forecastChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: forecastData.map(d => d.date),
+                    datasets: [{
+                        label: 'Forecast',
+                        data: forecastData.map(d => d.consumption),
+                        borderColor: '#10b981',
+                        backgroundColor: createGradient(ctx, 'rgba(16, 185, 129, 0.3)', 'rgba(16, 185, 129, 0)'),
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { grid: { color: 'rgba(16, 185, 129, 0.1)' } } } }
+            });
+        }
+
+        // Next Month Chart
+        if (nextMonthData.length) {
+            const ctx = document.getElementById('nextMonthChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: nextMonthData.map(d => d.date),
+                    datasets: [{
+                        data: nextMonthData.map(d => d.consumption),
+                        backgroundColor: createGradient(ctx, '#f59e0b', '#d97706'),
+                        borderRadius: 4
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { grid: { color: 'rgba(245, 158, 11, 0.1)' } } } }
+            });
+        }
+
+        // Comparison Chart
+        if (historyData.length && forecastData.length) {
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            const avgConsumption = {{ analysis.average_consumption | round(4) }};
+            const recentHistory = historyData.slice(-30);
+            const nearForecast = forecastData.slice(0, 30);
+
+            const allLabels = [...recentHistory.map(d => d.date), ...nearForecast.map(d => d.date)];
+            const actualData = [...recentHistory.map(d => d.consumption), ...nearForecast.map(() => null)];
+            const lastActual = recentHistory[recentHistory.length - 1];
+            const forecastLine = [...recentHistory.slice(0, -1).map(() => null), lastActual.consumption, ...nearForecast.map(d => d.consumption)];
+            const avgLine = allLabels.map(() => avgConsumption);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: allLabels,
+                    datasets: [
+                        { label: 'Actual', data: actualData, borderColor: '#6366f1', backgroundColor: createGradient(ctx, 'rgba(99, 102, 241, 0.2)', 'rgba(99, 102, 241, 0)'), fill: true, tension: 0.4, pointRadius: 2, pointHoverRadius: 6 },
+                        { label: 'Forecast', data: forecastLine, borderColor: '#10b981', backgroundColor: createGradient(ctx, 'rgba(16, 185, 129, 0.2)', 'rgba(16, 185, 129, 0)'), fill: true, tension: 0.4, borderDash: [5, 5], spanGaps: true, pointRadius: 2 },
+                        { label: 'Average', data: avgLine, borderColor: '#f59e0b', borderWidth: 2, fill: false, pointRadius: 0, borderDash: [10, 5] }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { intersect: false, mode: 'index' },
+                    plugins: { legend: { display: true, position: 'top', labels: { usePointStyle: true, padding: 20 } } },
+                    scales: { x: { display: false }, y: { grid: { color: 'rgba(99, 102, 241, 0.1)' } } }
+                }
+            });
+        }
+
+        // Animate progress bars on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.width = entry.target.dataset.width || entry.target.style.width;
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.progress-bar').forEach(bar => {
+            bar.dataset.width = bar.style.width;
+            bar.style.width = '0%';
+            observer.observe(bar);
+        });
+    </script>
 </body>
 </html>

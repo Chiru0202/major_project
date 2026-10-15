@@ -1,0 +1,102 @@
+[
+  {
+    "id": "house_1",
+    "name": "House 1",
+    "dataset": "D:\\Major Project\\data\\houses\\house_1\\energy.csv"
+  },
+  {
+    "id": "house_10",
+    "name": "House 10",
+    "dataset": "D:\\Major Project\\data\\houses\\house_10\\energy.csv"
+  },
+  {
+    "id": "house_11",
+    "name": "House 11",
+    "dataset": "D:\\Major Project\\data\\houses\\house_11\\energy.csv"
+  },
+  {
+    "id": "house_12",
+    "name": "House 12",
+    "dataset": "D:\\Major Project\\data\\houses\\house_12\\energy.csv"
+  },
+  {
+    "id": "house_13",
+    "name": "House 13",
+    "dataset": "D:\\Major Project\\data\\houses\\house_13\\energy.csv"
+  },
+  {
+    "id": "house_14",
+    "name": "House 14",
+    "dataset": "D:\\Major Project\\data\\houses\\house_14\\energy.csv"
+  },
+  {
+    "id": "house_15",
+    "name": "House 15",
+    "dataset": "D:\\Major Project\\data\\houses\\house_15\\energy.csv"
+  },
+  {
+    "id": "house_16",
+    "name": "House 16",
+    "dataset": "D:\\Major Project\\data\\houses\\house_16\\energy.csv"
+  },
+  {
+    "id": "house_17",
+    "name": "House 17",
+    "dataset": "D:\\Major Project\\data\\houses\\house_17\\energy.csv"
+  },
+  {
+    "id": "house_18",
+    "name": "House 18",
+    "dataset": "D:\\Major Project\\data\\houses\\house_18\\energy.csv"
+  },
+  {
+    "id": "house_19",
+    "name": "House 19",
+    "dataset": "D:\\Major Project\\data\\houses\\house_19\\energy.csv"
+  },
+  {
+    "id": "house_2",
+    "name": "House 2",
+    "dataset": "D:\\Major Project\\data\\houses\\house_2\\energy.csv"
+  },
+  {
+    "id": "house_20",
+    "name": "House 20",
+    "dataset": "D:\\Major Project\\data\\houses\\house_20\\energy.csv"
+  },
+  {
+    "id": "house_3",
+    "name": "House 3",
+    "dataset": "D:\\Major Project\\data\\houses\\house_3\\energy.csv"
+  },
+  {
+    "id": "house_4",
+    "name": "House 4",
+    "dataset": "D:\\Major Project\\data\\houses\\house_4\\energy.csv"
+  },
+  {
+    "id": "house_5",
+    "name": "House 5",
+    "dataset": "D:\\Major Project\\data\\houses\\house_5\\energy.csv"
+  },
+  {
+    "id": "house_6",
+    "name": "House 6",
+    "dataset": "D:\\Major Project\\data\\houses\\house_6\\energy.csv"
+  },
+  {
+    "id": "house_7",
+    "name": "House 7",
+    "dataset": "D:\\Major Project\\data\\houses\\house_7\\energy.csv"
+  },
+  {
+    "id": "house_8",
+    "name": "House 8",
+    "dataset": "D:\\Major Project\\data\\houses\\house_8\\energy.csv"
+  },
+  {
+    "id": "house_9",
+    "name": "House 9",
+    "dataset": "D:\\Major Project\\data\\houses\\house_9\\energy.csv"
+  }
+]
