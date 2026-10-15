@@ -185,13 +185,6 @@ def generate_advice(
             "📉 Your usage is decreasing - your conservation efforts are working!"
         )
 
-    # 5. Anomaly advice
-    anomaly_count = analysis.get('anomaly_count', 0)
-    if anomaly_count > 0:
-        advice.append(
-            f"⚡ Detected {anomaly_count} unusual reading(s). Check for appliance "
-            "issues or unexpected usage during those times."
-        )
 
     # 6. Peak time advice
     peak_hour = analysis.get('peak_hour')
@@ -213,6 +206,24 @@ def generate_advice(
         advice.append(
             f"ℹ️ {', '.join(low_impact[:2])} have minimal impact (<5% each). "
             "Focus optimization on larger consumers first."
+        )
+
+    # 8. Additional practical tips based on top consumers
+    if len(advice) < 4:
+        top_appliances = sorted(percentages.items(), key=lambda x: x[1], reverse=True)[:2]
+        for appliance, pct in top_appliances:
+            if len(advice) >= 4:
+                break
+            tips = APPLIANCE_TIPS.get(appliance, DEFAULT_TIPS)
+            if tips['reduce'] and len(tips['reduce']) > 1:
+                tip = tips['reduce'][1]  # Use second tip for variety
+                advice.append(f"💡 {appliance} tip: {tip}")
+
+    # 9. General energy saving tip
+    if len(advice) < 3:
+        advice.append(
+            "🌱 Use natural light during daytime and switch to LED bulbs "
+            "to reduce lighting costs by up to 75%."
         )
 
     # Ensure we have at least some advice
