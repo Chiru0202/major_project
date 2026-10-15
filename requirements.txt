@@ -1,5 +1,20 @@
-Flask
-pandas
-statsmodels
-base58
-ecdsa
+# Web framework
+Flask>=3.0.0
+
+# Data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Time series forecasting
+statsmodels>=0.14.0
+
+# Utilities (used in project)
+base58>=2.1.0
+ecdsa>=0.18.0
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+
+# Development (optional)
+werkzeug>=3.0.0

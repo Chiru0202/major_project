@@ -1,0 +1,13 @@
+# Virtual environment
+venv/
+
+# Visual Studio
+.vs/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment variables
+.env
